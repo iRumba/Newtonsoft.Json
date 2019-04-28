@@ -656,15 +656,16 @@ namespace Newtonsoft.Json
         private static string SerializeObjectInternal(object value, Type type, JsonSerializer jsonSerializer)
         {
             StringBuilder sb = new StringBuilder(256);
-            StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture);
-            using (JsonTextWriter jsonWriter = new JsonTextWriter(sw))
+            using (StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture))
             {
-                jsonWriter.Formatting = jsonSerializer.Formatting;
+                using (JsonTextWriter jsonWriter = new JsonTextWriter(sw))
+                {
+                    jsonWriter.Formatting = jsonSerializer.Formatting;
 
-                jsonSerializer.Serialize(jsonWriter, value, type);
+                    jsonSerializer.Serialize(jsonWriter, value, type);
+                }
+                return sw.ToString();
             }
-
-            return sw.ToString();
         }
         #endregion
 
